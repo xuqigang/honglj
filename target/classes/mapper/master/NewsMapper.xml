@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xqg.mapper.NewsMapper">
+    <resultMap id="BaseResultNewsMap" type="com.xqg.domain.NewsEntity">
+        <id column="news_id" jdbcType="INTEGER" property="newsId" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="create_date" jdbcType="VARCHAR" property="date" />
+    </resultMap>
+
+
+    <select id="selectNewsList" resultMap="BaseResultNewsMap" >
+        select n.title,n.content,n.create_date,n.news_id from news_list n where n.delete = '0' ;
+    </select>
+
+    <insert id="insert" parameterType="com.xqg.domain.NewsEntity">
+
+        insert into news_list (title, content)
+
+        values (
+            #{title},#{content}
+
+        );
+    </insert>
+
+    <update id="update" parameterType="com.xqg.domain.NewsEntity">
+
+
+        update news_list
+
+        set
+
+        <if test="title != null">
+
+            title = #{title},
+
+        </if>
+
+        <if test="content != null">
+
+            content = #{content},
+
+        </if>
+
+        <if test="delete != null">
+
+            `delete` = #{delete},
+
+        </if>
+
+        create_date = now()
+
+        where
+
+        news_id = #{newsId} and `delete` = 0;
+
+    </update>
+
+</mapper>

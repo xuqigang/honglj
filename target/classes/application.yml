@@ -1,0 +1,52 @@
+server:
+  port: 8098
+  context-path: /HLJVideo
+
+spring:
+  http:
+    multipart:
+      enabled: true
+      max-file-size: 3MB
+      max-request-size: 3MB
+  application:
+    name: HLJVideo
+    index: 1
+  profiles:
+    active: dev
+  aop:
+    auto: true
+    proxy-target-class: false
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    useGlobalDataSourceStat: true
+  thymeleaf:
+    cache: false #开发时关闭缓存,不然没法看到实时页面
+mybatis:
+  type-aliases-package: com.xqg.domain.*
+#  mapper-locations: com/zichan360/mapper/master/zichan360_rms/*.xml
+  mapper-locations: classpath:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    use-generated-keys: true
+    default-fetch-size: 100
+    default-statement-timeout: 60
+
+#LOG
+logging :
+  config : classpath:logback.xml
+

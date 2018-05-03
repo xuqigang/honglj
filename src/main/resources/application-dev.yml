@@ -1,0 +1,16 @@
+# 本地开发环境配置-dev
+spring:
+  profiles: dev
+  datasource:
+    a:
+      username: root
+      password: 12345678
+      url: jdbc:mysql://localhost:3306/honglj?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&tinyInt1isBit=false&serverTimezone=GMT%2B8
+#  redis:
+#      database: 0
+#      host: redis.local.zichan360.com
+#      host: test.redis.intra.zichan360.com
+#      host: 127.0.0.1
+#      port: 6379
+#      timeout: 100000
+#      pass:
