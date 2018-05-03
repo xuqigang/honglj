@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +31,15 @@ public class VideoListController {
 
 
     @RequestMapping(value = "/getRecommendVideoList")
-    public Map<String,Object> getRecommendVideoList(@RequestParam(value = "userId") Integer loginUserId){
-
-
-//        String userId=request.getParameter("userId");
+    public Map<String,Object> getRecommendVideoList(@RequestParam(value = "loginUserId" ,required = false) Integer loginUserId){
 
 
         List<VideoEntity> videoList = videoService.getRecommendVideoList(loginUserId);
+
+        videoList = setupVideoPariseCountForVideoList(videoList);
+
+
+
         Map<String,Object> map = new HashMap<>();
 
         map.put("result",videoList);
@@ -50,10 +53,12 @@ public class VideoListController {
     }
 
     @RequestMapping(value = "/getHotVideoList")
-    public Map<String,Object> getHotVideoList(@RequestParam(value = "userId") Integer loginUserId){
+    public Map<String,Object> getHotVideoList(@RequestParam(value = "loginUserId" ,required = false) Integer loginUserId){
 
 
         List<VideoEntity> videoList = videoService.getHotVideoList(loginUserId);
+        videoList = setupVideoPariseCountForVideoList(videoList);
+
         Map<String,Object> map = new HashMap<>();
 
         map.put("result",videoList);
@@ -67,9 +72,11 @@ public class VideoListController {
 
 
     @RequestMapping(value = "/getMyVideoList")
-    public Map<String,Object> getMyVideoList(@RequestParam(value = "userId") Integer userId){
+    public Map<String,Object> getMyVideoList(@RequestParam(value = "userId") Integer userId,@RequestParam(value = "loginUserId" ,required =false) Integer loginUserId){
 
-        List<VideoEntity> videoList = videoService.getMyVideoList(userId,1);
+        List<VideoEntity> videoList = videoService.getMyVideoList(userId,loginUserId);
+        videoList = setupVideoPariseCountForVideoList(videoList);
+
         Map<String,Object> map = new HashMap<>();
         map.put("result",videoList);
         map.put("code","1");
@@ -78,13 +85,39 @@ public class VideoListController {
     }
 
     @RequestMapping(value = "/getFavoriteVideoList")
-    public Map<String,Object> getFavoriteVideoList(@RequestParam(value = "userId") Integer userId){
+    public Map<String,Object> getFavoriteVideoList(@RequestParam(value = "userId") Integer userId,@RequestParam(value = "loginUserId" ,required =false) Integer loginUserId){
 
-        List<VideoEntity> videoList = videoService.getFavoriteVideoList(userId,1);
+        List<VideoEntity> videoList = videoService.getFavoriteVideoList(userId,loginUserId);
+        videoList = setupVideoPariseCountForVideoList(videoList);
         Map<String,Object> map = new HashMap<>();
         map.put("result",videoList);
         map.put("code","1");
         map.put("message","success");
         return map;
+    }
+
+
+
+
+    private List<VideoEntity> setupVideoPariseCountForVideoList(List<VideoEntity> videoList){
+
+        List<Integer> videoIds = new ArrayList<Integer>();
+
+        for(VideoEntity attribute : videoList) {
+            videoIds.add(attribute.getVideoId());
+        }
+
+        Map<Integer,Integer> videoPariseCounts = videoService.getVideosPraiseCount(videoIds);
+
+        for(int i = 0;  i < videoList.size(); i ++) {
+            VideoEntity videoEntity = videoList.get(i);
+
+            Object count = videoPariseCounts.get(videoEntity.getVideoId());
+            if (count != null) {
+                videoEntity.setFavoriteNum(Integer.valueOf(count.toString()));
+
+            }
+        }
+        return videoList;
     }
 }

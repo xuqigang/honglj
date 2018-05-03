@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -16,9 +18,9 @@ public class VideoServiceImpl implements VideoService {
     private VideoMapper videoMapper;
 
     @Override
-    public List<VideoEntity> getMyVideoList(int userId,int loginUserId){
+    public List<VideoEntity> getMyVideoList(Integer userId,Integer loginUserId){
 
-        List<VideoEntity> list = new ArrayList<>();
+//        List<VideoEntity> list = new ArrayList<>();
 //        for (int i = 0; i < 10; i++){
 //
 //            VideoEntity video = new VideoEntity();
@@ -36,19 +38,41 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public List<VideoEntity> getFavoriteVideoList(int userId,int loginUserId){
+    public List<VideoEntity> getFavoriteVideoList(Integer userId,Integer loginUserId){
 
         return videoMapper.getFavoriteVideoList(userId,loginUserId);
     }
 
     @Override
-    public List<VideoEntity> getRecommendVideoList(int loginUserId){
+    public List<VideoEntity> getRecommendVideoList(Integer loginUserId){
         return videoMapper.getRecommendVideoList(loginUserId);
     }
 
     @Override
-    public List<VideoEntity> getHotVideoList(int loginUserId){
+    public List<VideoEntity> getHotVideoList(Integer loginUserId){
         return videoMapper.getHotVideoList(loginUserId);
     }
 
+    @Override
+    public Integer getFavoriteVideoCount(Integer userId){
+        return videoMapper.getFavoriteVideoCount(userId);
+    }
+
+    @Override
+    public Integer getMyVideoeCount(Integer userId){
+        return videoMapper.getMyVideoCount(userId);
+    }
+
+    @Override
+    public Map<Integer,Integer> getVideosPraiseCount(List<Integer> videoIds){
+
+        List<Map<String ,Integer>> list = videoMapper.getVideosPraiseCount(videoIds);
+
+        //将返回的List转为map对象
+        Map<Integer,Integer> videosPraiseNum = new HashMap<>();
+        for(Map<String ,Integer> attribute : list) {
+            videosPraiseNum.put(attribute.get("videoId"),attribute.get("num"));
+        }
+        return videosPraiseNum;
+    }
 }

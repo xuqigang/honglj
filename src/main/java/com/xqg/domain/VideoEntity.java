@@ -42,11 +42,11 @@ public class VideoEntity {
      */
     private String cover;
 
-//    /*
-//     *喜欢数
-//     */
-//    private Integer favoriteNum;
-//
+    /*
+     *喜欢数
+     */
+    private Integer favoriteNum;
+
     /*
      *喜欢状态  0、不喜欢，1、喜欢
      */
@@ -72,6 +72,11 @@ public class VideoEntity {
      */
     private String  headPortrait;
 
+    public VideoEntity(){
+        this.favoriteNum = 0;
+        this.followState = 0;
+        this.favoriteState = 0;
+    }
     public Integer getVideoId() {
         return videoId;
     }
@@ -136,13 +141,13 @@ public class VideoEntity {
         this.cover = cover;
     }
 
-//    public Integer getFavoriteNum() {
-//        return favoriteNum;
-//    }
-//
-//    public void setFavoriteNum(Integer favoriteNum) {
-//        this.favoriteNum = favoriteNum;
-//    }
+    public Integer getFavoriteNum() {
+        return favoriteNum;
+    }
+
+    public void setFavoriteNum(Integer favoriteNum) {
+        this.favoriteNum = favoriteNum;
+    }
 
     public Integer getFavoriteState() {
         return favoriteState;

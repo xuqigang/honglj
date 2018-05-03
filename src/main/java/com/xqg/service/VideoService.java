@@ -2,14 +2,21 @@ package com.xqg.service;
 
 import com.xqg.domain.VideoEntity;
 import java.util.List;
+import java.util.Map;
 
 public interface VideoService {
 
-    List<VideoEntity> getMyVideoList(int userId,int loginUserId);
+    List<VideoEntity> getMyVideoList(Integer userId,Integer loginUserId);
 
-    List<VideoEntity> getFavoriteVideoList(int userId,int loginUserId);
+    List<VideoEntity> getFavoriteVideoList(Integer userId,Integer loginUserId);
 
-    List<VideoEntity> getRecommendVideoList(int loginUserId);
+    List<VideoEntity> getRecommendVideoList(Integer loginUserId);
 
-    List<VideoEntity> getHotVideoList(int loginUserId);
+    List<VideoEntity> getHotVideoList(Integer loginUserId);
+
+    Integer getFavoriteVideoCount(Integer userId);
+
+    Integer getMyVideoeCount(Integer userId);
+
+    Map<Integer,Integer> getVideosPraiseCount(List<Integer> videoIds);
 }
