@@ -1,6 +1,7 @@
 package com.xqg.service.impl;
 
 import com.xqg.domain.VideoEntity;
+import com.xqg.domain.VideoStateEntity;
 import com.xqg.mapper.VideoMapper;
 import com.xqg.service.VideoService;
 import org.springframework.stereotype.Service;
@@ -74,5 +75,20 @@ public class VideoServiceImpl implements VideoService {
             videosPraiseNum.put(attribute.get("videoId"),attribute.get("num"));
         }
         return videosPraiseNum;
+    }
+
+    @Override
+    public int insertVideo(VideoEntity videoEntity){
+        return videoMapper.insertVideo(videoEntity);
+    }
+
+    @Override
+    public int updateVideo(VideoEntity videoEntity){
+        return videoMapper.updateVideo(videoEntity);
+    }
+
+    @Override
+    public int updateVideoState(VideoStateEntity videoStateEntity){
+        return videoMapper.updateVideoState(videoStateEntity);
     }
 }

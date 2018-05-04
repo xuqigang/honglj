@@ -1,6 +1,7 @@
 package com.xqg.service.impl;
 
 import com.xqg.domain.UserDetailsEntity;
+import com.xqg.domain.UserFollowEntity;
 import com.xqg.domain.UserInfoEntity;
 import com.xqg.mapper.UserInfoMapper;
 import com.xqg.service.UserInfoService;
@@ -31,6 +32,21 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public int deleteUserInfo(UserInfoEntity user){
         return userInfoMapper.updateUserInfo(user);
+    }
+
+    @Override
+    public int unfollowUser(UserFollowEntity followInfo){
+        return userInfoMapper.unfollowUser(followInfo);
+    }
+
+    @Override
+    public int followUser(UserFollowEntity followInfo){
+        return userInfoMapper.followUser(followInfo);
+    }
+
+    @Override
+    public List<UserFollowEntity> getFollowInfo(UserFollowEntity followInfo){
+        return userInfoMapper.getFollowInfo(followInfo);
     }
 
 }

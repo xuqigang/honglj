@@ -10,6 +10,15 @@
         <result column="phone" jdbcType="VARCHAR" property="phone" />
         <result column="age" jdbcType="VARCHAR" property="age" />
     </resultMap>
+
+    <resultMap id="BaseResultUserFollowInfoMap" type="com.xqg.domain.UserFollowEntity">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="followerId" jdbcType="INTEGER" property="followerId" />
+        <result column="beFollowerId" jdbcType="INTEGER" property="beFollowerId" />
+
+    </resultMap>
+
+
     <!--<sql id="Base_Column_List">-->
     <!--id, name, password-->
     <!--</sql>-->
@@ -226,4 +235,30 @@
         userId = #{userId} and `delete` = 0;
 
     </update>
+
+    <select id="getFollowInfo" resultMap="BaseResultUserFollowInfoMap" parameterType="com.xqg.domain.UserFollowEntity">
+
+        select f.id,f.followerId,f.beFollowerId from user_follow_list f
+        where
+        f.followerId = #{followerId}
+        and f.beFollowerId = #{beFollowerId};
+
+    </select>
+    <insert id="followUser" parameterType="com.xqg.domain.UserFollowEntity">
+
+        insert into user_follow_list (followerId, beFollowerId, createDate )
+
+        values (
+
+        #{followerId},
+        #{beFollowerId},now()
+
+        );
+    </insert>
+
+    <delete id="unfollowUser" parameterType="com.xqg.domain.UserFollowEntity">
+        delete from user_follow_list
+        where user_follow_list.followerId = #{followerId} and user_follow_list.beFollowerId = #{beFollowerId};
+    </delete>
+
 </mapper>

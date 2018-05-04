@@ -3,47 +3,57 @@
 <mapper namespace="com.xqg.mapper.VideoMapper">
 
     <resultMap id="BaseVideoResultMap" type="com.xqg.domain.VideoEntity">
-        <id column="videoid" jdbcType="INTEGER" property="videoId" />
-        <result column="userid" jdbcType="INTEGER" property="userId" />
-        <result column="videourl" jdbcType="VARCHAR" property="videoUrl" />
+        <id column="videoId" jdbcType="INTEGER" property="videoId" />
+        <result column="userId" jdbcType="INTEGER" property="userId" />
+        <result column="videoUrl" jdbcType="VARCHAR" property="videoUrl" />
         <result column="cover" jdbcType="VARCHAR" property="cover" />
 
         <result column="title" jdbcType="VARCHAR" property="videoTitle" />
         <result column="introduction" jdbcType="VARCHAR" property="videoIntroduction" />
-        <result column="category" jdbcType="VARCHAR" property="category" />
-        <result column="categoryid" jdbcType="INTEGER" property="categoryId" />
+        <!--<result column="categoryId" jdbcType="INTEGER" property="category" />-->
 
-        <result column="follow_state" jdbcType="INTEGER" property="followState" />
-        <result column="favorite_state" jdbcType="INTEGER" property="favoriteState" />
+        <result column="followState" jdbcType="INTEGER" property="followState" />
+        <result column="favoriteState" jdbcType="INTEGER" property="favoriteState" />
 
     </resultMap>
+
+    <resultMap id="BaseVideoStateResultMap" type="com.xqg.domain.VideoStateEntity">
+        <id column="videoId" jdbcType="INTEGER" property="videoId" />
+        <result column="userId" jdbcType="INTEGER" property="userId" />
+        <result column="delete" jdbcType="INTEGER" property="delete" />
+        <result column="auditState" jdbcType="INTEGER" property="auditState" />
+        <result column="auditorId" jdbcType="INTEGER" property="auditorId" />
+
+    </resultMap>
+
+
 
 
     <select id="getMyVideoList" resultMap="BaseVideoResultMap">
 
 
-        select v.videoid,v.title,v.introduction,v.category,v.categoryid,v.videourl,v.cover,u.userId,u.headportrait
+        select v.videoId,v.title,v.introduction,v.categoryId,v.videoUrl,v.cover,u.userId,u.headportrait
 
         <choose>
 
             <when test="loginUserId != null and loginUserId != 0 ">
-                , if(ufl.id>0,1,0) as follow_state,if(vfl.id>0,1,0) as favorite_state
+                , if(ufl.id>0,1,0) as followState,if(vfl.id>0,1,0) as favoriteState
             </when>
             <otherwise>
-                , 0 as follow_state,0 as favorite_state
+                , 0 as followState,0 as favoriteState
             </otherwise>
         </choose>
 
         from videolist v
 
-        left join user u on u.userId = v.userid
+        left join userInfo u on u.userId = v.userId
 
         <if test="loginUserId != null and loginUserId != 0">
-            left join user_follow_list ufl on ufl.be_follower_id = #{loginUserId , jdbcType=INTEGER} and ufl.follower_id=u.userId
-            left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoid
+            left join user_follow_list ufl on ufl.beFollowerId = #{loginUserId , jdbcType=INTEGER} and ufl.followerId=u.userId
+            left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoId
         </if>
 
-        where v.userid = #{userId}
+        where v.userId = #{userId}
 
 
 
@@ -57,25 +67,25 @@
     <select id="getRecommendVideoList" resultMap="BaseVideoResultMap">
 
 
-        select v.videoid,v.title,v.introduction,v.category,v.categoryid,v.videourl,v.cover,u.userId,u.headportrait
+        select v.videoId,v.title,v.introduction,v.categoryId,v.videoUrl,v.cover,u.userId,u.headportrait
 
         <choose>
 
             <when test="loginUserId != null and loginUserId != 0 ">
-                , if(ufl.id>0,1,0) as follow_state,if(vfl.id>0,1,0) as favorite_state
+                , if(ufl.id>0,1,0) as followState,if(vfl.id>0,1,0) as favoriteState
             </when>
             <otherwise>
-                , 0 as follow_state,0 as favorite_state
+                , 0 as followState,0 as favoriteState
             </otherwise>
         </choose>
 
         from videolist v
 
-            left join user u on u.userId = v.userid
+            left join userInfo u on u.userId = v.userId
 
             <if test="loginUserId != null and loginUserId != 0">
-                left join user_follow_list ufl on ufl.be_follower_id = #{loginUserId , jdbcType=INTEGER} and ufl.follower_id=u.userId
-                left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoid
+                left join user_follow_list ufl on ufl.followerId = #{loginUserId , jdbcType=INTEGER} and ufl.beFollowerId=u.userId
+                left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoId
             </if>
 
         order by rand() limit 10;
@@ -85,26 +95,26 @@
     <select id="getHotVideoList" resultMap="BaseVideoResultMap">
 
 
-        select v.videoid,v.title,v.introduction,v.category,v.categoryid,v.videourl,v.cover,u.userId,u.headportrait
+        select v.videoId,v.title,v.introduction,v.categoryid,v.videoUrl,v.cover,u.userId,u.headportrait
 
         <choose>
 
-            <when test="loginUserId != null and loginUserId != 0">
-                , if(ufl.id>0,1,0) as follow_state,if(vfl.id>0,1,0) as favorite_state
+            <when test="loginUserId != null and loginUserId != 0 ">
+                , if(ufl.id>0,1,0) as followState,if(vfl.id>0,1,0) as favoriteState
             </when>
             <otherwise>
-                , 0 as follow_state,0 as favorite_state
+                , 0 as followState,0 as favoriteState
             </otherwise>
         </choose>
 
         from videolist v
 
-        left join user u on u.userId = v.userid
+        left join userInfo u on u.userId = v.userId
 
-        <if test="loginUserId != null and loginUserId != 0">
-            left join user_follow_list ufl on ufl.be_follower_id = #{loginUserId , jdbcType=INTEGER} and ufl.follower_id=u.userId
-            left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoid
-        </if>
+          <if test="loginUserId != null and loginUserId != 0">
+              left join user_follow_list ufl on ufl.followerId = #{loginUserId , jdbcType=INTEGER} and ufl.beFollowerId=u.userId
+              left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoId
+           </if>
 
         order by rand() limit 10;
 
@@ -113,7 +123,7 @@
 
     <select id="getFavoriteVideoList" resultMap="BaseVideoResultMap">
 
-        select v.videoid,v.title,v.introduction,v.category,v.categoryid,v.videourl,v.cover,v.userId,u.headportrait
+        select v.videoId,v.title,v.introduction,v.categoryId,v.videoUrl,v.cover,u.userId,u.headportrait
 
         from
 
@@ -125,9 +135,9 @@
           limit 10) f
 
           left join videolist v
-              left join user u
-              on v.userid = u.userId
-           on f.video_id = v.videoid) ;
+              left join userInfo u
+              on v.userId = u.userId
+           on f.video_id = v.videoId) ;
 
     </select>
 
@@ -173,5 +183,113 @@
         <!--where v.userid = #{userId , jdbcType=INTEGER}-->
 
     <!--</select>-->
+
+    <insert id="insertVideo" parameterType="com.xqg.domain.VideoEntity">
+
+        insert into videolist (
+
+        userId,
+        videoUrl,
+
+        <if test="videoTitle != null and videoTitle != ''">
+
+            title,
+
+        </if>
+
+        <if test="videoIntroduction != null and videoIntroduction != ''">
+
+            introduction,
+
+        </if>
+
+        <if test="cover != null and cover != ''">
+
+            cover,
+
+        </if>
+
+        createDate,
+        updateDate)
+        values (
+        #{userId},#{videoUrl},
+        <if test="videoTitle != null and videoTitle != ''">
+
+            #{videoTitle},
+
+        </if>
+
+        <if test="videoIntroduction != null and videoIntroduction != ''">
+
+            #{videoIntroduction},
+
+        </if>
+
+        <if test="cover != null and cover != ''">
+
+            #{cover},
+
+        </if>
+        now(),
+        now()
+        );
+    </insert>
+
+    <update id="updateVideo" parameterType="com.xqg.domain.VideoEntity">
+        update videolist
+        set
+        <if test="videoTitle != null and videoTitle != ''">
+
+            title = #{videoTitle},
+
+        </if>
+
+        <if test="videoIntroduction != null and videoIntroduction != ''">
+
+            introduction = #{videoIntroduction},
+
+        </if>
+
+        <if test="cover != null and cover != ''">
+            cover = #{cover},
+        </if>
+        updateDate = now()
+
+        where
+
+        userId = #{userId} and videoId = #{videoId} and `delete` = 0;
+
+    </update>
+
+    <update id="updateVideoState" parameterType="com.xqg.domain.VideoStateEntity">
+        update videolist
+        set
+        <if test="delete != null ">
+
+            `delete` = #{delete },
+
+        </if>
+
+        <if test="auditState != null ">
+
+            auditState = #{auditState},
+
+        </if>
+
+        <if test="auditorId != null ">
+            auditorId = #{auditorId},
+        </if>
+
+        auditDate = now()
+        where
+        `delete` = 0
+        and videoId = #{videoId}
+        <if test="userId != null">
+
+         and userId = #{userId}
+
+        </if>;
+
+    </update>
 
 </mapper>

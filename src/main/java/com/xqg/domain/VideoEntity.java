@@ -33,11 +33,6 @@ public class VideoEntity {
     private String category;
 
     /*
-     *分类ID
-     */
-    private Integer categoryId;
-
-    /*
      *封面图
      */
     private String cover;
@@ -123,14 +118,6 @@ public class VideoEntity {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
     }
 
     public String getCover() {
