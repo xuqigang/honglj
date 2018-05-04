@@ -15,19 +15,39 @@
 
         <result column="follow_state" jdbcType="INTEGER" property="followState" />
         <result column="favorite_state" jdbcType="INTEGER" property="favoriteState" />
+
     </resultMap>
+
 
     <select id="getMyVideoList" resultMap="BaseVideoResultMap">
 
 
         select v.videoid,v.title,v.introduction,v.category,v.categoryid,v.videourl,v.cover,u.userId,u.headportrait
 
-        from videolist v left join user u on u.userId = v.userid
+        <choose>
 
-        where v.userid = #{userId , jdbcType=INTEGER}
+            <when test="loginUserId != null and loginUserId != 0 ">
+                , if(ufl.id>0,1,0) as follow_state,if(vfl.id>0,1,0) as favorite_state
+            </when>
+            <otherwise>
+                , 0 as follow_state,0 as favorite_state
+            </otherwise>
+        </choose>
 
-        order by rand() limit 10;
+        from videolist v
 
+        left join user u on u.userId = v.userid
+
+        <if test="loginUserId != null and loginUserId != 0">
+            left join user_follow_list ufl on ufl.be_follower_id = #{loginUserId , jdbcType=INTEGER} and ufl.follower_id=u.userId
+            left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoid
+        </if>
+
+        where v.userid = #{userId}
+
+
+
+        order by rand();
 
 
 
@@ -53,7 +73,7 @@
 
             left join user u on u.userId = v.userid
 
-            <if test="userId != null and userId != 0">
+            <if test="loginUserId != null and loginUserId != 0">
                 left join user_follow_list ufl on ufl.be_follower_id = #{loginUserId , jdbcType=INTEGER} and ufl.follower_id=u.userId
                 left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoid
             </if>
@@ -69,7 +89,7 @@
 
         <choose>
 
-            <when test="userId != null and userId != 0">
+            <when test="loginUserId != null and loginUserId != 0">
                 , if(ufl.id>0,1,0) as follow_state,if(vfl.id>0,1,0) as favorite_state
             </when>
             <otherwise>
@@ -81,7 +101,7 @@
 
         left join user u on u.userId = v.userid
 
-        <if test="userId != null and userId != 0">
+        <if test="loginUserId != null and loginUserId != 0">
             left join user_follow_list ufl on ufl.be_follower_id = #{loginUserId , jdbcType=INTEGER} and ufl.follower_id=u.userId
             left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoid
         </if>
@@ -93,16 +113,65 @@
 
     <select id="getFavoriteVideoList" resultMap="BaseVideoResultMap">
 
+        select v.videoid,v.title,v.introduction,v.category,v.categoryid,v.videourl,v.cover,v.userId,u.headportrait
 
-        select v.videoid,v.title,v.introduction,v.category,v.categoryid,v.videourl,v.cover,v.userId
+        from
 
-        from video_favorite_list f left join videolist v on f.video_id = v.videoid
+        ((select f.id,f.user_id,f.video_id
+          from video_favorite_list f
 
-        where f.user_id = #{loginUserId , jdbcType=INTEGER}
+          where f.user_id = #{userId , jdbcType=INTEGER}
 
-        limit 10;
+          limit 10) f
+
+          left join videolist v
+              left join user u
+              on v.userid = u.userId
+           on f.video_id = v.videoid) ;
 
     </select>
 
+
+    <!--获取视频点赞数-->
+    <select id="getVideosPraiseCount" resultType="java.util.HashMap" parameterType="java.lang.Integer">
+
+        SELECT videoId, count(videoId) as num FROM
+
+        (select f.video_id as videoId
+
+        from video_favorite_list f
+
+        where f.video_id in
+
+        <foreach collection="list" item="videoId" index="index" open="(" separator="," close=")">
+            #{videoId}
+        </foreach>) p GROUP BY videoId;
+
+    </select>
+
+
+    <!--&lt;!&ndash;获取用户喜欢的视频数&ndash;&gt;-->
+    <!--<select id="getFavoriteVideoCount" resultMap="java.lang.Integer" parameterType="java.lang.Integer">-->
+
+
+        <!--select count(f.id)-->
+
+        <!--from video_favorite_list f-->
+
+        <!--where f.user_id = #{userId , jdbcType=INTEGER}-->
+
+    <!--</select>-->
+
+    <!--&lt;!&ndash;获取用户的自己的视频数&ndash;&gt;-->
+    <!--<select id="getMyVideoCount" resultMap="java.lang.Integer" parameterType="java.lang.Integer">-->
+
+
+        <!--select count(v.videoid)-->
+
+        <!--from videolist v-->
+
+        <!--where v.userid = #{userId , jdbcType=INTEGER}-->
+
+    <!--</select>-->
 
 </mapper>

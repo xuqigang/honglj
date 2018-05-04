@@ -1,90 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xqg.mapper.UserMapper">
-  <resultMap id="BaseResultUserDetailsMap" type="com.xqg.domain.UserDetailsEntity">
-    <id column="userid" jdbcType="INTEGER" property="userId" />
-    <result column="username" jdbcType="VARCHAR" property="userName" />
+  <resultMap id="BaseResultUserMap" type="com.xqg.domain.UserEntity">
+    <id column="userId" jdbcType="INTEGER" property="userId" />
+    <result column="userName" jdbcType="VARCHAR" property="userName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="nickname" jdbcType="VARCHAR" property="nickName" />
-    <result column="sex" jdbcType="VARCHAR" property="sex" />
-    <result column="motto" jdbcType="VARCHAR" property="motto" />
-    <result column="headportrait" jdbcType="VARCHAR" property="headportrait" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="age" jdbcType="VARCHAR" property="age" />
+    <result column="loginType" jdbcType="INTEGER" property="loginType" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+
   </resultMap>
-  <!--<sql id="Base_Column_List">-->
-    <!--id, name, password-->
-  <!--</sql>-->
-  <!--<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">-->
-    <!--select -->
-    <!--<include refid="Base_Column_List" />-->
-    <!--from user-->
-    <!--where id = #{id,jdbcType=INTEGER}-->
-  <!--</select>-->
-  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">-->
-    <!--delete from user-->
-    <!--where id = #{id,jdbcType=INTEGER}-->
-  <!--</delete>-->
-  <!--<insert id="insert" parameterType="com.xqg.domain.User">-->
-    <!--insert into user (id, name, password-->
-      <!--)-->
-    <!--values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}-->
-      <!--)-->
-  <!--</insert>-->
-  <!--<insert id="insertSelective" parameterType="com.xqg.domain.User">-->
-    <!--insert into user-->
-    <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
-      <!--<if test="id != null">-->
-        <!--id,-->
-      <!--</if>-->
-      <!--<if test="name != null">-->
-        <!--name,-->
-      <!--</if>-->
-      <!--<if test="password != null">-->
-        <!--password,-->
-      <!--</if>-->
-    <!--</trim>-->
-    <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
-      <!--<if test="id != null">-->
-        <!--#{id,jdbcType=INTEGER},-->
-      <!--</if>-->
-      <!--<if test="name != null">-->
-        <!--#{name,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="password != null">-->
-        <!--#{password,jdbcType=VARCHAR},-->
-      <!--</if>-->
-    <!--</trim>-->
-  <!--</insert>-->
-  <!--<update id="updateByPrimaryKeySelective" parameterType="com.xqg.domain.User">-->
-    <!--update user-->
-    <!--<set>-->
-      <!--<if test="name != null">-->
-        <!--name = #{name,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="password != null">-->
-        <!--password = #{password,jdbcType=VARCHAR},-->
-      <!--</if>-->
-    <!--</set>-->
-    <!--where id = #{id,jdbcType=INTEGER}-->
-  <!--</update>-->
-  <!--<update id="updateByPrimaryKey" parameterType="com.xqg.domain.User">-->
-    <!--update user-->
-    <!--set name = #{name,jdbcType=VARCHAR},-->
-      <!--password = #{password,jdbcType=VARCHAR}-->
-    <!--where id = #{id,jdbcType=INTEGER}-->
-  <!--</update>-->
 
-  <select id="selectAllUser" resultMap="BaseResultUserDetailsMap">
-    select * from user
-  </select>
-
-  <select id="getUserInfoByEntity" resultMap="BaseResultUserDetailsMap" parameterType="com.xqg.domain.UserDetailsEntity">
+  <select id="getUser" resultMap="BaseResultUserMap" parameterType="com.xqg.domain.UserEntity">
 
 
-    select * from user u
+    select u.userId,u.userName,u.loginType,u.token from user u
     where
-      u.delete = 0
+
+    u.delete = 0
 
     <if test="userId != null and userId != 0">
 
@@ -94,7 +26,7 @@
 
     <if test="userName != null and userName != ''">
 
-      and u.username = #{userName}
+      and u.userName = #{userName}
 
     </if>
 
@@ -104,20 +36,78 @@
 
     </if>
 
+    <if test="token != null and token != ''">
+
+      and u.token = #{token}
+
+    </if>
+
+    <if test="loginType != null and loginType != ''">
+
+      and u.loginType = #{loginType}
+
+    </if>
     ;
   </select>
 
-  <insert id="insertUser" parameterType="com.xqg.domain.UserDetailsEntity">
+  <insert id="insertUser" parameterType="com.xqg.domain.UserEntity">
 
-    insert into user (username, password, phone)
+    insert into user (
+
+    <if test="userName != null and userName != ''">
+
+      userName,
+
+    </if>
+
+    <if test="password != null and password != ''">
+
+      password,
+
+    </if>
+
+    <if test="token != null and token != ''">
+
+      token,
+
+    </if>
+
+    <if test="loginType != null and loginType != ''">
+
+      loginType,
+
+    </if>
+
+    createDate,
+    updateDate
+
+
+    )
 
     values (
-            #{userName},#{password},#{phone}
+    <if test="userName != null and userName != ''">
+      #{userName},
+    </if>
+
+    <if test="password != null and password != ''">
+      #{password},
+    </if>
+
+    <if test="token != null and token != ''">
+      #{token},
+    </if>
+
+    <if test="loginType != null and loginType != ''">
+      #{loginType},
+    </if>
+
+    now(),
+    now()
 
     );
   </insert>
 
-  <update id="updateByUserDetailsEntity" parameterType="com.xqg.domain.UserDetailsEntity">
+  <update id="updateUser" parameterType="com.xqg.domain.UserEntity">
 
 
     update user
@@ -126,7 +116,7 @@
 
     <if test="userName != null and userName != ''">
 
-      username = #{userName},
+      userName = #{userName},
 
     </if>
 
@@ -136,27 +126,16 @@
 
     </if>
 
-    <if test="nickName != null">
-      nickname = #{nickName},
+    <if test="loginType != null">
+      loginType = #{loginType},
     </if>
 
-    <if test="sex != null">
-      sex = #{sex},
+    <if test="token != null">
+      token = #{token},
     </if>
 
-    <if test="motto != null">
-      motto = #{motto},
-    </if>
 
-    <if test="phone != null">
-      phone = #{phone},
-    </if>
-
-    <if test="age != null">
-      age = #{age},
-    </if>
-
-    update_date = now()
+    updateDate = now()
 
     where
 

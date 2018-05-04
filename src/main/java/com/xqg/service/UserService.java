@@ -1,18 +1,19 @@
 package com.xqg.service;
 
 import com.xqg.domain.UserDetailsEntity;
+import com.xqg.domain.UserEntity;
+
+import java.util.List;
 
 
 public interface UserService {
 
-    UserDetailsEntity getUserInfoByUserId(Integer userId);
+    List<UserEntity> getUser(UserEntity user);
 
-    UserDetailsEntity getUserInfoByUserName(Integer userName);
+    int insertUser(UserEntity user);
 
-    UserDetailsEntity getUserInfoByEntity(UserDetailsEntity user);
+    int updateUser(UserEntity user);
 
-    int insertUser(UserDetailsEntity user);
-
-    int updateByUserDetailsEntity(UserDetailsEntity user);
+    int deleteUser(UserEntity user);
 
 }

@@ -1,14 +1,10 @@
 package com.xqg.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.xqg.domain.User;
 import com.xqg.domain.VideoEntity;
-import com.xqg.service.UserService;
 import com.xqg.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

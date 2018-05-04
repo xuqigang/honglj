@@ -1,5 +1,6 @@
 package com.xqg.utils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +11,9 @@ public class ResponseUtils {
         Map<String ,Object> resultMap = new HashMap<>();
 
         resultMap.put("data",data);
-        resultMap.put("code",code);
+        resultMap.put("status",code);
         resultMap.put("message",message);
+        resultMap.put("timestamp",new Date());
 
         return resultMap;
     }
