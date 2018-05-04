@@ -1452,24 +1452,24 @@
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="340" parent="282" name="user_id">
+    <column id="340" parent="282" name="userId">
       <Position>2</Position>
       <Comment>用户ID</Comment>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="341" parent="282" name="video_id">
+    <column id="341" parent="282" name="videoId">
       <Position>3</Position>
       <Comment>被喜欢的视频</Comment>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="342" parent="282" name="create_time">
+    <column id="342" parent="282" name="createDate">
       <Position>4</Position>
       <Comment>创建日期</Comment>
-      <DataType>date|0s</DataType>
+      <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
     <key id="343" parent="282" name="PRIMARY">
