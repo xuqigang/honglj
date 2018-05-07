@@ -26,6 +26,15 @@
 
     </resultMap>
 
+    <resultMap id="BasePraiseVideoResultMap" type="com.xqg.domain.VideoPraiseEntity">
+
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="userId" jdbcType="INTEGER" property="userId" />
+        <result column="videoId" jdbcType="INTEGER" property="videoId" />
+        <result column="createDate" jdbcType="DATE" property="createDate" />
+
+    </resultMap>
+
 
 
 
@@ -291,5 +300,28 @@
         </if>;
 
     </update>
+
+    <select id="getPraiseVideo" resultMap="BasePraiseVideoResultMap" parameterType="com.xqg.domain.VideoPraiseEntity">
+
+        select v.id,v.userId,v.videoId,v.createDate from video_favorite_list v
+        where
+        v.userId = #{userId}
+        and v.videoId = #{videoId};
+
+    </select>
+    <insert id="praiseVideo" parameterType="com.xqg.domain.VideoPraiseEntity">
+
+        insert into video_favorite_list (userId, videoId, createDate )
+
+        values (
+        #{userId},
+        #{videoId},now()
+        );
+    </insert>
+
+    <delete id="unPraiseVideo" parameterType="com.xqg.domain.VideoPraiseEntity">
+        delete from video_favorite_list
+        where video_favorite_list.userId = #{userId} and video_favorite_list.videoId = #{videoId};
+    </delete>
 
 </mapper>

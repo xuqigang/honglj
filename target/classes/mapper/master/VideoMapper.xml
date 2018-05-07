@@ -26,6 +26,15 @@
 
     </resultMap>
 
+    <resultMap id="BasePraiseVideoResultMap" type="com.xqg.domain.VideoPraiseEntity">
+
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="userId" jdbcType="INTEGER" property="userId" />
+        <result column="videoId" jdbcType="INTEGER" property="videoId" />
+        <result column="createDate" jdbcType="DATE" property="createDate" />
+
+    </resultMap>
+
 
 
 
@@ -50,7 +59,7 @@
 
         <if test="loginUserId != null and loginUserId != 0">
             left join user_follow_list ufl on ufl.beFollowerId = #{loginUserId , jdbcType=INTEGER} and ufl.followerId=u.userId
-            left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoId
+            left join video_favorite_list vfl on vfl.userId = #{loginUserId , jdbcType=INTEGER} and vfl.videoId=v.videoId
         </if>
 
         where v.userId = #{userId}
@@ -85,7 +94,7 @@
 
             <if test="loginUserId != null and loginUserId != 0">
                 left join user_follow_list ufl on ufl.followerId = #{loginUserId , jdbcType=INTEGER} and ufl.beFollowerId=u.userId
-                left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoId
+                left join video_favorite_list vfl on vfl.userId = #{loginUserId , jdbcType=INTEGER} and vfl.videoId=v.videoId
             </if>
 
         order by rand() limit 10;
@@ -113,7 +122,7 @@
 
           <if test="loginUserId != null and loginUserId != 0">
               left join user_follow_list ufl on ufl.followerId = #{loginUserId , jdbcType=INTEGER} and ufl.beFollowerId=u.userId
-              left join video_favorite_list vfl on vfl.user_id = #{loginUserId , jdbcType=INTEGER} and vfl.video_id=v.videoId
+              left join video_favorite_list vfl on vfl.userId = #{loginUserId , jdbcType=INTEGER} and vfl.videoId=v.videoId
            </if>
 
         order by rand() limit 10;
@@ -127,17 +136,17 @@
 
         from
 
-        ((select f.id,f.user_id,f.video_id
+        ((select f.id,f.userId,f.videoId
           from video_favorite_list f
 
-          where f.user_id = #{userId , jdbcType=INTEGER}
+          where f.userId = #{userId , jdbcType=INTEGER}
 
           limit 10) f
 
           left join videolist v
               left join userInfo u
               on v.userId = u.userId
-           on f.video_id = v.videoId) ;
+           on f.videoId = v.videoId) ;
 
     </select>
 
@@ -147,11 +156,11 @@
 
         SELECT videoId, count(videoId) as num FROM
 
-        (select f.video_id as videoId
+        (select f.videoId as videoId
 
         from video_favorite_list f
 
-        where f.video_id in
+        where f.videoId in
 
         <foreach collection="list" item="videoId" index="index" open="(" separator="," close=")">
             #{videoId}
@@ -291,5 +300,28 @@
         </if>;
 
     </update>
+
+    <select id="getPraiseVideo" resultMap="BasePraiseVideoResultMap" parameterType="com.xqg.domain.VideoPraiseEntity">
+
+        select v.id,v.userId,v.videoId,v.createDate from video_favorite_list v
+        where
+        v.userId = #{userId}
+        and v.videoId = #{videoId};
+
+    </select>
+    <insert id="praiseVideo" parameterType="com.xqg.domain.VideoPraiseEntity">
+
+        insert into video_favorite_list (userId, videoId, createDate )
+
+        values (
+        #{userId},
+        #{videoId},now()
+        );
+    </insert>
+
+    <delete id="unPraiseVideo" parameterType="com.xqg.domain.VideoPraiseEntity">
+        delete from video_favorite_list
+        where video_favorite_list.userId = #{userId} and video_favorite_list.videoId = #{videoId};
+    </delete>
 
 </mapper>

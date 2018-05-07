@@ -1,6 +1,7 @@
 package com.xqg.controller;
 
 import com.xqg.domain.VideoEntity;
+import com.xqg.domain.VideoPraiseEntity;
 import com.xqg.domain.VideoStateEntity;
 import com.xqg.service.VideoService;
 import com.xqg.utils.ResponseUtils;
@@ -147,6 +148,23 @@ public class VideoListController {
             return ResponseUtils.result("1",message,null);
         } else  {
             return ResponseUtils.result("0","操作失败",null);
+        }
+
+    }
+
+    @RequestMapping(value = "/praiseVideo")
+    public Map<String,Object> praiseVideo(@RequestParam(value = "loginUserId" ) Integer loginUserId,@RequestParam(value = "videoId" ) Integer videoId,@RequestParam(value = "praiseState" ) Integer praiseState){
+
+        VideoPraiseEntity videoPraiseEntity = new VideoPraiseEntity();
+        videoPraiseEntity.setUserId(loginUserId);
+        videoPraiseEntity.setVideoId(videoId);
+
+        if (praiseState == 0){
+            videoService.unPraiseVideo(videoPraiseEntity);
+            return ResponseUtils.result("1","已取消",null);
+        } else  {
+            videoService.praiseVideo(videoPraiseEntity);
+            return ResponseUtils.result("1","success",null);
         }
 
     }

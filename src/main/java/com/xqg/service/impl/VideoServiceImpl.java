@@ -1,6 +1,7 @@
 package com.xqg.service.impl;
 
 import com.xqg.domain.VideoEntity;
+import com.xqg.domain.VideoPraiseEntity;
 import com.xqg.domain.VideoStateEntity;
 import com.xqg.mapper.VideoMapper;
 import com.xqg.service.VideoService;
@@ -90,5 +91,21 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public int updateVideoState(VideoStateEntity videoStateEntity){
         return videoMapper.updateVideoState(videoStateEntity);
+    }
+
+    @Override
+    public int praiseVideo(VideoPraiseEntity videoPraiseEntity){
+
+        if (videoMapper.getPraiseVideo(videoPraiseEntity).size() > 0){
+            return 1;
+        } else  {
+            return videoMapper.praiseVideo(videoPraiseEntity);
+        }
+
+    }
+
+    @Override
+    public int unPraiseVideo(VideoPraiseEntity videoPraiseEntity){
+        return videoMapper.unPraiseVideo(videoPraiseEntity);
     }
 }

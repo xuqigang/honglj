@@ -1,6 +1,7 @@
 package com.xqg.service;
 
 import com.xqg.domain.VideoEntity;
+import com.xqg.domain.VideoPraiseEntity;
 import com.xqg.domain.VideoStateEntity;
 
 import java.util.List;
@@ -28,5 +29,9 @@ public interface VideoService {
     int updateVideo(VideoEntity videoEntity);
 
     int updateVideoState(VideoStateEntity videoStateEntity);
+
+    int praiseVideo(VideoPraiseEntity videoPraiseEntity);
+
+    int unPraiseVideo(VideoPraiseEntity videoPraiseEntity);
 
 }

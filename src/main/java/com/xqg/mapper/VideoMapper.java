@@ -1,5 +1,6 @@
 package com.xqg.mapper;
 import com.xqg.domain.VideoEntity;
+import com.xqg.domain.VideoPraiseEntity;
 import com.xqg.domain.VideoStateEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -29,5 +30,11 @@ public interface VideoMapper {
     int updateVideo(VideoEntity videoEntity);
 
     int updateVideoState(VideoStateEntity videoStateEntity);
+
+    List<VideoPraiseEntity> getPraiseVideo(VideoPraiseEntity videoPraiseEntity);
+
+    int praiseVideo(VideoPraiseEntity videoPraiseEntity);
+
+    int unPraiseVideo(VideoPraiseEntity videoPraiseEntity);
 
 }
